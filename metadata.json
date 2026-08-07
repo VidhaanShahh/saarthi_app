@@ -1,0 +1,6 @@
+{
+  "name": "Saarthi",
+  "description": "Voice-first legal, government scheme, and civil rights AI companion for India in multiple regional languages.",
+  "requestFramePermissions": ["microphone", "camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
