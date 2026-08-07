@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "Saarthi",
+    "slug": "saarthi-mobile",
+    "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#012d1d",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.saarthi.mobile",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Saarthi needs camera access to scan documents for explanation.",
+        "NSMicrophoneUsageDescription": "Saarthi needs microphone access for voice interaction.",
+        "NSSpeechRecognitionUsageDescription": "Saarthi uses speech recognition to understand your questions."
+      }
+    },
+    "android": {
+      "package": "com.saarthi.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#012d1d",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-camera",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Saarthi needs camera access to scan documents."
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Saarthi needs microphone access for voice questions."
+        }
+      ]
+    ]
+  }
+}

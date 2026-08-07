@@ -1,0 +1,82 @@
+import { StyleSheet } from 'react-native';
+
+export const Typography = StyleSheet.create({
+  boldHeadline: {
+    fontFamily: 'System',
+    fontSize: 40,
+    fontWeight: '700' as const,
+    lineHeight: 44,
+    color: '#012d1d',
+    letterSpacing: -1.2,
+  },
+  boldHeadlineSm: {
+    fontFamily: 'System',
+    fontSize: 28,
+    fontWeight: '700' as const,
+    lineHeight: 32,
+    color: '#012d1d',
+    letterSpacing: -0.8,
+  },
+  titleLg: {
+    fontFamily: 'System',
+    fontSize: 22,
+    fontWeight: '700' as const,
+    lineHeight: 28,
+    color: '#012d1d',
+  },
+  titleMd: {
+    fontFamily: 'System',
+    fontSize: 18,
+    fontWeight: '700' as const,
+    lineHeight: 24,
+    color: '#012d1d',
+  },
+  bodyLg: {
+    fontFamily: 'System',
+    fontSize: 16,
+    fontWeight: '500' as const,
+    lineHeight: 22,
+    color: '#1a1c18',
+  },
+  bodyMd: {
+    fontFamily: 'System',
+    fontSize: 14,
+    fontWeight: '500' as const,
+    lineHeight: 20,
+    color: '#1a1c18',
+  },
+  bodySm: {
+    fontFamily: 'System',
+    fontSize: 13,
+    fontWeight: '500' as const,
+    lineHeight: 18,
+    color: '#717973',
+  },
+  boldLabel: {
+    fontFamily: 'System',
+    fontSize: 11,
+    fontWeight: '700' as const,
+    lineHeight: 16,
+    textTransform: 'uppercase' as const,
+    letterSpacing: 1,
+    color: '#717973',
+  },
+  buttonLg: {
+    fontFamily: 'System',
+    fontSize: 15,
+    fontWeight: '700' as const,
+    lineHeight: 20,
+  },
+  buttonSm: {
+    fontFamily: 'System',
+    fontSize: 13,
+    fontWeight: '700' as const,
+    lineHeight: 18,
+  },
+  chipText: {
+    fontFamily: 'System',
+    fontSize: 12,
+    fontWeight: '600' as const,
+    lineHeight: 16,
+  },
+});
