@@ -111,6 +111,9 @@ export const VoiceInteractionScreen: React.FC<VoiceInteractionScreenProps> = ({
     setIsListening(false);
     setIsProcessing(true);
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4500);
+
     try {
       const res = await fetch('/api/ask', {
         method: 'POST',
@@ -118,8 +121,10 @@ export const VoiceInteractionScreen: React.FC<VoiceInteractionScreenProps> = ({
         body: JSON.stringify({
           prompt: promptToSubmit,
           language: selectedLanguage
-        })
+        }),
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
 
       const data = await res.json();
       
@@ -135,9 +140,9 @@ export const VoiceInteractionScreen: React.FC<VoiceInteractionScreenProps> = ({
         verifiedSource: data.verifiedSource || 'Official Government Source',
         summary: data.summary || 'Official step-by-step guidance provided by Saarthi.',
         steps: data.steps || [
-          { number: 1, title: 'Visit Police Station', description: 'Go to nearest police station with jurisdiction.' },
-          { number: 2, title: 'State Facts Clearly', description: 'Narrate what happened to the officer.' },
-          { number: 3, title: 'Collect Stamped Copy', description: 'Demand a free copy of the signed FIR.' }
+          { number: 1, title: 'Visit Designated Authority', description: 'Go to the nearest station or department portal.' },
+          { number: 2, title: 'Submit Detailed Statement', description: 'Explain what happened clearly and attach ID proof.' },
+          { number: 3, title: 'Collect Stamped Copy', description: 'Always demand your free signed and stamped copy.' }
         ],
         simplifiedSummary: data.simplifiedSummary || 'Explain what happened to the duty officer, review the written statement, sign it, and collect your free official stamped copy.',
         followups: data.followups || ['Can I file online?', 'What documents do I need?'],
@@ -148,6 +153,7 @@ export const VoiceInteractionScreen: React.FC<VoiceInteractionScreenProps> = ({
       setResultQuestion(newQuestion);
       onAddQuestion(newQuestion);
     } catch (e) {
+      clearTimeout(timeoutId);
       console.error('Failed to ask Saarthi:', e);
       // Fallback result
       const fallback: QuestionItem = {
