@@ -164,28 +164,35 @@ function getTemplateResponse(prompt: string, language: string = 'Marathi') {
 
 // 1. API: Ask Saarthi Question (Fast AI + Smart Cache + Instant Fallback)
 app.post('/api/ask', async (req, res) => {
+  const t0 = Date.now();
   const { prompt, language = 'Marathi', category } = req.body;
 
   if (!prompt || typeof prompt !== 'string') {
     return res.status(400).json({ error: 'Prompt string is required' });
   }
 
+  // ── STAGE 1: Cache Check ──
   const cacheKey = `${prompt.trim().toLowerCase()}__${language}`;
   if (queryCache.has(cacheKey)) {
+    console.log(`⚡ [CACHE HIT] "${prompt.slice(0,40)}…" → ${Date.now() - t0}ms`);
     return res.json(queryCache.get(cacheKey));
   }
+  console.log(`🔍 [STAGE 1: Cache Miss] +${Date.now() - t0}ms`);
 
-  // Fast Fallback if API key missing or simulation mode
+  // ── STAGE 2: Knowledge Base / Fallback Check ──
   if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'MY_GEMINI_API_KEY') {
     const template = getTemplateResponse(prompt, language);
     queryCache.set(cacheKey, template);
+    console.log(`📚 [STAGE 2: Knowledge Base Fallback] → ${Date.now() - t0}ms TOTAL`);
     return res.json(template);
   }
+  console.log(`🔑 [STAGE 2: API Key OK] +${Date.now() - t0}ms`);
 
   try {
+    // ── STAGE 3: Gemini LLM Call ──
+    const t3 = Date.now();
     const ai = getGeminiClient();
 
-    // Strict 3.5-second timeout promise race so response NEVER takes minutes
     const apiPromise = ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: `Question from citizen: "${prompt}". Language requested: ${language}. Category: ${category || 'Legal/Rights'}.`,
@@ -227,18 +234,22 @@ Return strictly valid JSON matching the schema.`,
     );
 
     const response: any = await Promise.race([apiPromise, timeoutPromise]);
+    console.log(`🤖 [STAGE 3: Gemini LLM] ${Date.now() - t3}ms (total +${Date.now() - t0}ms)`);
 
+    // ── STAGE 4: Parse + Cache ──
     if (response && response.text) {
       const parsed = JSON.parse(response.text);
       queryCache.set(cacheKey, parsed);
+      console.log(`✅ [STAGE 4: Parse+Cache] → ${Date.now() - t0}ms TOTAL`);
       return res.json(parsed);
     }
 
     throw new Error('No text returned from Gemini');
   } catch (err: any) {
-    console.warn('Fast fallback applied for /api/ask:', err.message);
+    console.warn(`⚠️ [FALLBACK] ${err.message} at +${Date.now() - t0}ms → using Knowledge Base`);
     const template = getTemplateResponse(prompt, language);
     queryCache.set(cacheKey, template);
+    console.log(`📚 [FALLBACK SERVED] → ${Date.now() - t0}ms TOTAL`);
     return res.json(template);
   }
 });
